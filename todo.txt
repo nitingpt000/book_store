@@ -1,0 +1,10 @@
+register a user
+login a user
+who am i
+add a new book
+update a book
+get all books
+get single book
+add new order
+cancel order
+get all orders of user
