@@ -45,8 +45,16 @@ cd client
 yarn
 ```
 
+To run client:
+
 ```sh
-127.0.0.1:8000
+yarn start
+```
+
+To run server:
+
+```sh
+yarn start
 ```
 
 here you get the https://dbdiagram.io/d/63fb58a3296d97641d83cc52
