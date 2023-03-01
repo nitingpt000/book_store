@@ -1,64 +1,48 @@
 import Joi from "@hapi/joi";
-
+import db from "../../../services/db";
+import rest from "../../../helpers/rest";
 class OrderController {
   static async get(req, res, next) {
     try {
-      const { orderId } = req.params;
-      const order = await OrderService.get(orderId);
-      return res.json(order);
+      const order = await db.getOrderByOrderId(req,res);
+      return rest.response.status200(res,order);
     } catch (err) {
       next(err);
     }
   }
   static async getAll(req, res, next) {
     try {
-      const orders = await OrderService.getAll();
-      return res.json(orders);
+      const orders = await db.getOrders(req,res);
+      return rest.response.status200(res,orders);
     } catch (err) {
       next(err);
     }
   }
   static async create(req, res, next) {
     try {
-      const order = await OrderService.create(req.body);
-      return res.json(order);
-    } catch (err) {
-      next(err);
-    }
-  }
-  static async update(req, res, next) {
-    try {
-      const { orderId } = req.params;
-      const order = await OrderService.update(orderId, req.body);
-      return res.json(order);
+      const {body} = req;
+      OrderController.validateCreateOrder(body);
+      const order = await db.createOrder(req,res);
+      return rest.response.status201(res,order);
     } catch (err) {
       next(err);
     }
   }
 
+
   // ----------------------- ARG VALIDATION ------------------------
-  static validateCreate(args) {
+  static validateCreateOrder(args) {
     const createOrderSchema = Joi.object({
-      userId: Joi.string().required(),
-      bookId: Joi.string().required(),
-      quantity: Joi.number().required(),
+      customerId: Joi.number().required(),
+      totalPrice: Joi.number().required(),
+      status: Joi.string().required(),
     });
     const validation = createOrderSchema.validate(args);
     if (validation.error) {
       throw new Error(validation.error);
     }
   }
-  static validateUpdate(args) {
-    const updateOrderSchema = Joi.object({
-      userId: Joi.string(),
-      bookId: Joi.string(),
-      quantity: Joi.number(),
-    });
-    const validation = updateOrderSchema.validate(args);
-    if (validation.error) {
-      throw new Error(validation.error);
-    }
-  }
+ 
 }
 
 export default OrderController;
