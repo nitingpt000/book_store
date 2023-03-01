@@ -1,7 +1,7 @@
 import Joi from "@hapi/joi";
 import { ReasonPhrases, StatusCodes } from "http-status-codes";
 import rest from "../../../helpers/rest";
-
+import db from "../../../services/db";
 class UserController {
   static async get(req, res, next) {
     try {
@@ -14,8 +14,8 @@ class UserController {
   }
   static async getAll(req, res, next) {
     try {
-      const orders = await UserService.getAll();
-      return res.json(orders);
+      const users = await db.getUsers(req,res);
+      return res.json(users);
     } catch (err) {
       next(err);
     }
@@ -24,6 +24,9 @@ class UserController {
     try {
       const { body } = req;
       UserController.validateCreate(body);
+      const result = await db.createUser(req,res);
+      console.log(result);
+      process.exit()
       return rest.response.status201(res, body);
       const order = await UserService.create(req.body);
       return res.json(order);
@@ -50,7 +53,7 @@ class UserController {
       password: Joi.string()
         .pattern(new RegExp("^[a-zA-Z0-9]{3,30}$"))
         .required(),
-      repeat_password: Joi.ref("password"),
+      repeatPassword: Joi.ref("password"),
     });
     const validation = createUserSchema.validate(args);
     if (validation.error) {
