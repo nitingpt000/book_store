@@ -5,10 +5,12 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon -r esm index.js",
-    "start": "node -r esm index.js"
+    "start": "node -r esm index.js",
+    "test-connection": "node -r esm services/db.js"
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",
+    "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "esm": "^3.2.25",
@@ -17,8 +19,10 @@
     "flatted": "^3.2.7",
     "helmet": "^6.0.1",
     "http-status-codes": "^2.2.0",
+    "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.21",
     "multer": "^1.4.5-lts.1",
+    "pg": "^8.9.0",
     "swagger-ui-express": "^4.6.1"
   },
   "devDependencies": {

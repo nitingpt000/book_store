@@ -8,3 +8,15 @@ get single book
 add new order
 cancel order
 get all orders of user
+
+
+
+ui---------------
+/login
+/register
+/index
+/book detail page
+/cart page
+/checkout page
+/order successfully placed
+/order list(cancel the order)
