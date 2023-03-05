@@ -5,8 +5,8 @@ class JwtHelper{
 static sign(payload,expiry='60s',secret="kjlksjdflksj"){
     return jwt.sign(payload,secret,{expiresIn:expiry});
 }
-static verify(){
-
+static verify(token, secret = 'kjlksjdflksj') {
+    return jwt.verify(token, secret);
 }
 }
 

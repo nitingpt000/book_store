@@ -1,6 +1,9 @@
 import Joi from "@hapi/joi";
 import db from "../../../services/db";
 import rest from "../../../helpers/rest";
+import multer from "multer"
+
+
 
 class BookController {
   static async get(req, res, next) {
@@ -23,9 +26,18 @@ class BookController {
   static async create(req, res, next) {
     try {
       const {body} = req;
-      BookController.validateCreateBook(body);
+      // Multipart form data
+
+      // BookController.validateCreateBook(body);
+
+      try {
       const book = await db.createBook(req,res);
-      return rest.response.status201(res,book);
+      return rest.response.status201(res, book);
+
+      } catch (err) {
+          return next(err);
+      }
+      res.status(201).json(document);
     } catch (err) {
       next(err);
     }
@@ -52,7 +64,7 @@ class BookController {
       genreId:Joi.number().required(),
       price:Joi.number().required(),
       quantity:Joi.number().integer().required(),
-      image:Joi.string().base64().required()
+      image:Joi.string().base64().required(),
     });
     const validation = createBookSchema.validate(args);
     if (validation.error) {

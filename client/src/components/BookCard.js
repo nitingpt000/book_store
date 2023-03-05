@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Card, Tag, Skeleton, Avatar, Row } from "antd";
-import { Images } from "../assets";
-import { UserOutlined } from "@ant-design/icons";
+import { apiUrl } from "../helpers/constants";
 
-const { Meta } = Card;
-
-const BookCard = ({ onClick }) => {
+const imagePath= apiUrl
+const BookCard = ({ onClick,bookData }) => {
   const [isLoading, setIsLoading] = useState(true);
-
+  
+  const {author,book_id,genre_id,image_url,isbn,price,title,publisher,genre_name}=bookData
   useEffect(() => {
+    
     setTimeout(() => {
       setIsLoading(false);
     }, 2000);
@@ -32,7 +32,8 @@ const BookCard = ({ onClick }) => {
       ) : (
         <img
           alt="example"
-          src={Images.book1}
+          crossOrigin="anonymous"
+          src={imagePath+image_url}
           onLoad={() => setIsLoading(false)}
         />
       )}
@@ -41,15 +42,14 @@ const BookCard = ({ onClick }) => {
           <Skeleton active />
         ) : (
           <div className="flex flex-col justify-center items-center py-2 gap-2">
-            <div className="font-bold text-xl">$40.34</div>
+            <div className="font-bold text-xl">${price}</div>
             <div className="text-center">
-              The Courage to Be Free: Florida's Blueprint for America's Revival
+              {title}
             </div>
-            <div className="font-semibold">George Bush</div>
+            <div className="font-semibold">{author}</div>
             <Row className="flex py-2">
-              <Tag className="bg-black text-white ">fiction</Tag>
-              <Tag className="bg-black text-white">non-fiction</Tag>
-              <Tag className="bg-black text-white">science</Tag>
+              <Tag className="bg-black text-white ">{genre_name}</Tag>
+             
             </Row>
           </div>
         )}

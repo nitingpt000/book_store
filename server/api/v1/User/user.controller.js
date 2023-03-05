@@ -24,16 +24,37 @@ class UserController {
     try {
       const { body } = req;
       UserController.validateCreate(body);
-      const result = await db.createUser(req,res);
-      console.log(result);
-      process.exit()
-      return rest.response.status201(res, body);
-      const order = await UserService.create(req.body);
-      return res.json(order);
+      const {access_token:accessToken} = await db.createUser(req,res);
+      const result = {accessToken,email:body.email}
+      return rest.response.status201(res, result);
     } catch (err) {
       next(err);
     }
   }
+
+  static async login(req, res, next) {
+    try {
+      const { body } = req;
+      UserController.validateLogin(body);
+      const accessToken = await db.userLogin(req,res);
+      const result = {accessToken,email:body.email}
+      return rest.response.status201(res, result);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async me(req, res, next) {
+    try {
+      const accessToken = await db.me(req,res);
+      const result = {accessToken,email:body.email}
+      return rest.response.status201(res, result);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+
   static async update(req, res, next) {
     try {
       const { orderId } = req.params;
@@ -60,6 +81,22 @@ class UserController {
       throw new rest.RestError(
         StatusCodes.BAD_REQUEST,
         "Create User Argument Validation Error",
+        {
+          message: `Missing args or bad format: ${validation.error.message}`,
+        }
+      );
+    }
+  }
+  static validateLogin(args) {
+    const loginUserSchema = Joi.object({
+      email: Joi.string().required(),
+      password: Joi.string().required()
+    });
+    const validation = loginUserSchema.validate(args);
+    if (validation.error) {
+      throw new rest.RestError(
+        StatusCodes.BAD_REQUEST,
+        "User login Argument Validation Error",
         {
           message: `Missing args or bad format: ${validation.error.message}`,
         }

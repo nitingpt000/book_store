@@ -4,6 +4,7 @@ export const User = {
   get: "/:userId",
   getAll: "",
   create: "",
+  login:"/login"
 };
 
 export const Authentication = {};

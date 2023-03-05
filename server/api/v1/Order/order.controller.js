@@ -29,15 +29,39 @@ class OrderController {
     }
   }
 
+  static async update(req, res, next) {
+    try {
+      const {body} = req;
+      OrderController.validateUpdateOrder(body);
+      const order = await db.updateOrder(req,res);
+      return rest.response.status200(res,order);
+    } catch (err) {
+      next(err);
+    }
+  }
+
 
   // ----------------------- ARG VALIDATION ------------------------
   static validateCreateOrder(args) {
     const createOrderSchema = Joi.object({
       customerId: Joi.number().required(),
-      totalPrice: Joi.number().required(),
-      status: Joi.string().required(),
+      orderTotal: Joi.number().required(),
+      bookList: Joi.array().min(1).items(Joi.object({
+        bookId: Joi.number().required(),
+        quantity: Joi.number().required()
+      })).required(),
     });
     const validation = createOrderSchema.validate(args);
+    if (validation.error) {
+      throw new Error(validation.error);
+    }
+  }
+
+  static validateUpdateOrder(args) {
+    const updateOrderSchema = Joi.object({
+      status: Joi.string().required(),
+    });
+    const validation = updateOrderSchema.validate(args);
     if (validation.error) {
       throw new Error(validation.error);
     }

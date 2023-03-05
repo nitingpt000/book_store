@@ -1,5 +1,6 @@
 import express from "express";
 import helmet from "helmet";
+import cors from "cors";
 import { APP_PORT } from "./config";
 import constants from "./helpers/constants";
 import routes from "./api/v1/routes";
@@ -10,6 +11,9 @@ const { baseUrl } = constants;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
+app.use(cors());
+app.use('/uploads', express.static('uploads'));
+
 // app.use(expressWinston.logger())
 app.use(`${baseUrl}`, routes);
 

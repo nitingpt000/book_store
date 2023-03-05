@@ -11,20 +11,34 @@ import {
   Spin,
   Typography,
 } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import OrderSuccessModal from "../components/OrderSuccessModal";
+import { useStoreState,useStoreDispatch } from "../contexts/store";
+import { actions } from "../contexts/store/actions";
+import axios from 'axios'
+import { apiUrl } from "../helpers/constants";
 const { Title, Text } = Typography;
 
 function CheckoutPage() {
   const [modalVisible, setModalVisible] = useState(false);
-
+  const [total,setTotal]=useState(0)
+  const storeDispatch = useStoreDispatch();
+  const {cartList} = useStoreState();
+  console.log(cartList)
   const navigate = useNavigate();
-
+  const afterCheckout = () => {
+    // Implement the functionality to add the product to the user's cart.
+    const items = [];
+    actions.addItemToCart(storeDispatch, items);
+  };
   const handleOrderClick = () => {
     // Perform the order processing logic here
     // ...
-
+    console.log(cartList);
+    const order = {customerId:2,orderTotal:total,bookList:[{bookId:10,quantity:2},{bookId:10,quantity:2}]}
+    axios.post(`${apiUrl}/order`,order);
+    afterCheckout()
     // Set the modal visibility to true to show the success message
     setModalVisible(true);
   };
@@ -36,6 +50,16 @@ function CheckoutPage() {
     // Set the modal visibility to false to hide the modal
     navigate("/");
   };
+  
+
+
+  useEffect(() => {
+    actions.fetchCartItems(storeDispatch, cartList);
+    setTotal(cartList.reduce((acc,cumm)=>{
+      acc+=(cumm.price*cumm.quantity)
+      return acc
+    },0))
+  }, [storeDispatch, cartList]);
 
   return (
     <Space direction="vertical" style={{ width: "100%" }}>
@@ -114,9 +138,9 @@ function CheckoutPage() {
             <Col span={8} offset={4} className="flex flex-col">
               <Title level={3}>Order Summary</Title>
               <Divider />
-              <Text>Example Product: $19.99</Text>
+              <Text>Sub Total: ${total}</Text>
               <Divider />
-              <Text strong>Total: $19.99</Text>
+              <Text strong>Total: ${total}</Text>
               <Button
                 type="default"
                 htmlType="submit"
