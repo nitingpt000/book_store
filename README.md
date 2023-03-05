@@ -1,4 +1,5 @@
-# Book Store [WIP]
+# Book Store
+[screen-capture (1).webm](https://user-images.githubusercontent.com/25717258/222991637-6496454f-d893-4d1d-aa1f-0a1684839160.webm)
 
 ## _The Last Book Store, Ever_
 
